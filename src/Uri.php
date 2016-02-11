@@ -276,6 +276,27 @@ class Uri implements UriInterface
         return $uri->withQuery(implode('&', $result));
     }
 
+    public static function withAddedQueryValues(UriInterface $uri, array $queryValues) : UriInterface
+    {
+        $current = $uri->getQuery();
+        if (false === empty($current)) {
+            parse_str($current, $values);
+
+            foreach ($values as $key => $value) {
+                if (false === isset($queryValues[$key])) {
+                    $queryValues[$key] = $value;
+                }
+            }
+        }
+
+        $result = [];
+        foreach ($queryValues as $key => $value) {
+            $result[] = $key . '=' . $value;
+        }
+
+        return $uri->withQuery(implode('&', $result));
+    }
+
     /**
      * Create a URI from a hash of parse_url parts.
      *

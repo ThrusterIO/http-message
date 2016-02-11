@@ -282,4 +282,26 @@ class UriTest extends \PHPUnit_Framework_TestCase
         $input = 'urn://example:animal:ferret:nose';
         $uri = new Uri($input);
     }
+
+    public function testWithAddedQuery()
+    {
+        $uri = new Uri('http://foo.com/bar');
+        $uri = Uri::withQueryValue($uri, 'a', 'b');
+        $uri = Uri::withQueryValue($uri, 'c', 'd');
+
+        $this->assertEquals('a=b&c=d', $uri->getQuery());
+
+        $uri = Uri::withAddedQueryValues($uri, ['a' => 'foo', 'c' => 'bar', 'foo' => 'bar']);
+
+        $this->assertEquals('a=foo&c=bar&foo=bar', $uri->getQuery());
+    }
+
+    public function testWithAddedQueryNested()
+    {
+        $uri = new Uri('http://foo.com/bar?a=b&c[d]=e');
+
+        $uri = Uri::withAddedQueryValues($uri, ['a' => 'foo', 'c' => 'bar', 'foo' => 'bar']);
+
+        $this->assertEquals('a=foo&c=bar&foo=bar', $uri->getQuery());
+    }
 }
